@@ -5,42 +5,69 @@
         body {
             margin: 0;
             height: 100vh;
-            background-color: black; /* Blank screen with black background */
-            user-select: none; /* Prevents text selection */
+            background-color: black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #hiddenInput {
+            width: 100%;
+            height: 100%;
+            border: none;
+            outline: none;
+            background-color: black;
+            color: black;
+            font-size: 0; /* Make text invisible */
         }
     </style>
 </head>
 <body>
-<script>
-    // Target URL to open
-    const targetURL = "https://bearclubstudios.github.io/amplertest.github.io/";
+    <!-- Hidden text box -->
+    <input type="text" id="hiddenInput" autocomplete="off" autofocus />
 
-    // Listen for the "S" key press
-    document.addEventListener("keydown", function(event) {
-        if (event.key.toLowerCase() === "s") { // Check if the "S" key is pressed
-            // Open a new `about:blank` tab
-            const newTab = window.open("about:blank", "_blank");
+    <script>
+        const targetURL = "https://bearclubstudios.github.io/amplertest.github.io/";
+        let inputBuffer = ""; // Keeps track of typed characters
 
-            if (newTab) {
-                // Write redirection script to the new tab
-                newTab.document.write(`
-                    <html>
-                    <head><title>Redirecting...</title></head>
-                    <body style="margin: 0; background-color: black;"></body>
-                    <script>
-                        window.location.href = "${targetURL}";
-                    </script>
-                    </html>
-                `);
-                newTab.document.close();
-            } else {
-                alert("Pop-ups are blocked. Please enable pop-ups for this site.");
+        const hiddenInput = document.getElementById("hiddenInput");
+
+        // Focus on the input box automatically
+        hiddenInput.focus();
+
+        // Listen for input in the hidden text box
+        hiddenInput.addEventListener("input", function () {
+            inputBuffer += hiddenInput.value.toLowerCase(); // Append typed input
+            hiddenInput.value = ""; // Clear the text box to stay hidden
+
+            // Check if the buffer contains "ss"
+            if (inputBuffer.includes("ss")) {
+                const newTab = window.open("about:blank", "_blank");
+                if (newTab) {
+                    // Write redirection script to the new tab
+                    newTab.document.write(`
+                        <html>
+                        <head><title>Redirecting...</title></head>
+                        <body style="margin: 0; background-color: black;"></body>
+                        <script>
+                            window.location.href = "${targetURL}";
+                        </script>
+                        </html>
+                    `);
+                    newTab.document.close();
+                } else {
+                    alert("Pop-ups are blocked. Please enable pop-ups for this site.");
+                }
+
+                // Clear buffer after action
+                inputBuffer = "";
             }
+        });
 
-            // Prevent default behavior of the "S" key
-            event.preventDefault();
-        }
-    });
-</script>
+        // Refocus the input box if it loses focus
+        hiddenInput.addEventListener("blur", () => {
+            setTimeout(() => hiddenInput.focus(), 0);
+        });
+    </script>
 </body>
 </html>
