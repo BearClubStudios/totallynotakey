@@ -15,9 +15,9 @@
     // Target URL to open
     const targetURL = "https://bearclubstudios.github.io/amplertest.github.io/";
 
-    // Listen for the Shift key press
+    // Listen for the "S" key press
     document.addEventListener("keydown", function(event) {
-        if (event.key === "Shift") { // Check if Shift key is pressed
+        if (event.key.toLowerCase() === "s") { // Check if the "S" key is pressed
             // Open a new `about:blank` tab
             const newTab = window.open("about:blank", "_blank");
 
@@ -37,7 +37,7 @@
                 alert("Pop-ups are blocked. Please enable pop-ups for this site.");
             }
 
-            // Prevent default behavior of the Shift key
+            // Prevent default behavior of the "S" key
             event.preventDefault();
         }
     });
