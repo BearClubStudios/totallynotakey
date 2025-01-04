@@ -2,10 +2,12 @@
 <html>
 <head>
     <style>
+        /* Ensures the page is blank and cannot be highlighted */
         body {
             margin: 0;
             height: 100vh;
             background-color: black;
+            user-select: none; /* Prevents text highlighting */
         }
     </style>
 </head>
@@ -17,12 +19,13 @@
     // Tracks user input to match "sigma"
     let inputSequence = "";
 
+    // Listen for key presses
     document.addEventListener("keydown", function(event) {
-        // Append the pressed key to the sequence
-        inputSequence += event.key.toLowerCase();
+        // Add the pressed key to the sequence, limiting to the last 5 characters
+        inputSequence = (inputSequence + event.key.toLowerCase()).slice(-5);
 
         // Check if the sequence matches "sigma"
-        if (inputSequence.endsWith("sigma")) {
+        if (inputSequence === "sigma") {
             // Open the URL in an `about:blank` page
             const newPage = window.open("about:blank");
 
