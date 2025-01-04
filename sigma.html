@@ -5,8 +5,8 @@
         body {
             margin: 0;
             height: 100vh;
-            background-color: black;
-            user-select: none; /* Prevents text highlighting */
+            background-color: black; /* Blank screen with black background */
+            user-select: none; /* Prevents text selection */
         }
     </style>
 </head>
@@ -14,9 +14,6 @@
 <script>
     // Target URL to open
     const targetURL = "https://bearclubstudios.github.io/amplertest.github.io/";
-
-    // Detect protocol to handle local file scenarios
-    const isLocal = window.location.protocol === "file:" || window.location.href.startsWith("C:/");
 
     // Listen for the Shift key press
     document.addEventListener("keydown", function(event) {
@@ -36,21 +33,6 @@
                     </html>
                 `);
                 newTab.document.close();
-
-                // Handle tab closing differently for local and non-local files
-                if (isLocal) {
-                    alert("The file tab cannot be closed automatically due to browser restrictions. Please close this tab manually.");
-                } else {
-                    // Attempt to close the current tab for non-local scenarios
-                    setTimeout(() => {
-                        try {
-                            window.open('', '_self'); // Repoint the tab to itself
-                            window.close(); // Try to close it
-                        } catch (e) {
-                            console.warn("Could not close the current tab.");
-                        }
-                    }, 1000); // Delay ensures the new tab loads first
-                }
             } else {
                 alert("Pop-ups are blocked. Please enable pop-ups for this site.");
             }
