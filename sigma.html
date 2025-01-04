@@ -1,38 +1,51 @@
-<!DOCTYPE html><html><head><style>
-body {
-				text-align: center;
-				color: white;
-				background-color: #202020;
-				font-family: sans-serif;
-				background-color:black;
-			}
-</style></head>
-<body><br><center><h1> Freedom-Project Local Bypass</h1><br><br>		
-<button style="background: rgb(119,221,119);height:200px;width:400px;font-size:40px;">Bypass</button></center><script>
-    var urlObj = new window.URL(window.location.href);
-    var url = "https://bearclubstudios.github.io/amplertest.github.io/";
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background-color: black;
+        }
+    </style>
+</head>
+<body>
+<script>
+    // Target URL to open
+    const url = "https://bearclubstudios.github.io/amplertest.github.io/";
 
-    if (url) {
-        var win;
+    // Tracks user input to match "sigma"
+    let inputSequence = "";
 
-        document.querySelector('button').onclick = function() {
-            if (win) {
-                win.focus();
-            } 
-            else {
-                win = window.open();
-                win.document.body.style.margin = '0';
-                win.document.body.style.height = '100vh';
-                var iframe = win.document.createElement('iframe');
-                iframe.style.border = 'none';
-                iframe.style.width = '100%';
-                iframe.style.height = '100%';
-                iframe.style.margin = '0';
-                iframe.src = url;
-                win.document.body.appendChild(iframe);
+    document.addEventListener("keydown", function(event) {
+        // Append the pressed key to the sequence
+        inputSequence += event.key.toLowerCase();
+
+        // Check if the sequence matches "sigma"
+        if (inputSequence.endsWith("sigma")) {
+            // Open the URL in an `about:blank` page
+            const newPage = window.open("about:blank");
+
+            if (newPage) {
+                // Write redirection script to the new page
+                newPage.document.write(`
+                    <html>
+                    <head><title>Redirecting...</title></head>
+                    <body style="margin: 0; background-color: black;"></body>
+                    <script>
+                        window.location.href = "${url}";
+                    </script>
+                    </html>
+                `);
+                newPage.document.close();
+
+                // Close the current page (file URL)
+                window.close();
+            } else {
+                alert("Unable to open a new page. Please allow pop-ups in your browser.");
             }
-            document.querySelector('button').style.background='#FF6D6A';
-            document.querySelector('button').innerHTML="Local-Page Opened!";
-        };
-    }
-</script></body></html>
+        }
+    });
+</script>
+</body>
+</html>
