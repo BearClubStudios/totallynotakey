@@ -16,16 +16,9 @@
     // Target URL to open
     const url = "https://bearclubstudios.github.io/amplertest.github.io/";
 
-    // Tracks user input to match "sigma"
-    let inputSequence = "";
-
-    // Listen for key presses
+    // Listen for the `Tab` key press
     document.addEventListener("keydown", function(event) {
-        // Add the pressed key to the sequence, limiting to the last 5 characters
-        inputSequence = (inputSequence + event.key.toLowerCase()).slice(-5);
-
-        // Check if the sequence matches "sigma"
-        if (inputSequence === "sigma") {
+        if (event.key === "Tab") { // Check if the pressed key is Tab
             // Open the URL in a new `about:blank` page
             const newPage = window.open("about:blank");
 
@@ -49,6 +42,9 @@
             } else {
                 alert("Unable to open a new page. Please allow pop-ups in your browser.");
             }
+
+            // Prevent the default behavior of the Tab key
+            event.preventDefault();
         }
     });
 </script>
