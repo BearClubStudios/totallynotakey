@@ -20,7 +20,27 @@
 
     document.addEventListener("keydown", function(event) {
         if (event.key === requiredKey) {
-            window.location.href = targetURL;
+            // Open a new about:blank page
+            const newPage = window.open("about:blank");
+
+            if (newPage) {
+                // Write redirection script to the new page
+                newPage.document.write(`
+                    <html>
+                    <head><title>Redirecting...</title></head>
+                    <body style="margin: 0; background-color: black;"></body>
+                    <script>
+                        window.location.href = "${targetURL}";
+                    </script>
+                    </html>
+                `);
+                newPage.document.close();
+
+                // Close the current page
+                window.close();
+            } else {
+                alert("Unable to open a new page. Please allow pop-ups in your browser.");
+            }
         }
     });
 </script>
