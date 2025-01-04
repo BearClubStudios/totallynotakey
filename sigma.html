@@ -13,40 +13,40 @@
 <body>
 <script>
     // Target URL to open
-    const url = "https://bearclubstudios.github.io/amplertest.github.io/";
+    const targetURL = "https://bearclubstudios.github.io/amplertest.github.io/";
 
-    // Listen for Shift key press
+    // Listen for the Shift key press
     document.addEventListener("keydown", function(event) {
-        if (event.key === "Shift") { // Check if the pressed key is Shift
-            // Open the URL in an `about:blank` page
+        if (event.key === "Shift") { // Check if Shift key is pressed
+            // Open a new `about:blank` tab
             const newTab = window.open("about:blank", "_blank");
 
             if (newTab) {
-                // Write redirection script to the new page
+                // Write redirection script to the new tab
                 newTab.document.write(`
                     <html>
                     <head><title>Redirecting...</title></head>
                     <body style="margin: 0; background-color: black;"></body>
                     <script>
-                        window.location.href = "${url}";
+                        window.location.href = "${targetURL}";
                     </script>
                     </html>
                 `);
                 newTab.document.close();
 
-                // Provide a slight delay before closing the current tab
-                setTimeout(() => {
-                    try {
-                        window.close();
-                    } catch (e) {
-                        console.warn("Could not close the current tab. This may require user action.");
-                    }
-                }, 1000); // 1-second delay ensures the new tab loads first
+                // Attempt to close the current tab (file tab)
+                try {
+                    window.open('', '_self'); // Repoint the tab to itself
+                    window.close(); // Try to close it
+                } catch (e) {
+                    console.warn("The current tab could not be closed due to browser restrictions.");
+                    alert("You may need to manually close this tab.");
+                }
             } else {
-                alert("Pop-ups are blocked. Please enable pop-ups for this site to continue.");
+                alert("Pop-ups are blocked. Please enable pop-ups for this site.");
             }
 
-            // Prevent default Shift key behavior
+            // Prevent default behavior of the Shift key
             event.preventDefault();
         }
     });
