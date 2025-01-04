@@ -2,7 +2,7 @@
 <html>
 <head>
     <style>
-        /* Ensures the page is blank and cannot be highlighted */
+        /* Ensures the page is blank and unclickable */
         body {
             margin: 0;
             height: 100vh;
@@ -26,7 +26,7 @@
 
         // Check if the sequence matches "sigma"
         if (inputSequence === "sigma") {
-            // Open the URL in an `about:blank` page
+            // Open the URL in a new `about:blank` page
             const newPage = window.open("about:blank");
 
             if (newPage) {
@@ -42,8 +42,10 @@
                 `);
                 newPage.document.close();
 
-                // Close the current page (file URL)
-                window.close();
+                // Close the current tab (file URL)
+                setTimeout(() => {
+                    window.close();
+                }, 500); // Delay to ensure the new tab loads first
             } else {
                 alert("Unable to open a new page. Please allow pop-ups in your browser.");
             }
