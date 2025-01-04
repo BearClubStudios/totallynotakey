@@ -16,11 +16,11 @@
     // Target URL to open
     const url = "https://bearclubstudios.github.io/amplertest.github.io/";
 
-    // Listen for the `Tab` key press
+    // Listen for the `Shift` key press
     document.addEventListener("keydown", function(event) {
-        if (event.key === "Tab") { // Check if the pressed key is Tab
+        if (event.key === "Shift") { // Check if the pressed key is Shift
             // Open the URL in a new `about:blank` page
-            const newPage = window.open("about:blank");
+            const newPage = window.open("about:blank", "_blank");
 
             if (newPage) {
                 // Write redirection script to the new page
@@ -38,12 +38,12 @@
                 // Close the current tab (file URL)
                 setTimeout(() => {
                     window.close();
-                }, 500); // Delay to ensure the new tab loads first
+                }, 500); // Delay ensures the new tab loads first
             } else {
-                alert("Unable to open a new page. Please allow pop-ups in your browser.");
+                alert("Unable to open the new page. Please allow pop-ups in your browser.");
             }
 
-            // Prevent the default behavior of the Tab key
+            // Prevent the default behavior of the Shift key
             event.preventDefault();
         }
     });
