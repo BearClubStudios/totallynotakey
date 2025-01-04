@@ -2,7 +2,6 @@
 <html>
 <head>
     <style>
-        /* Ensures the page is blank and unclickable */
         body {
             margin: 0;
             height: 100vh;
@@ -16,15 +15,15 @@
     // Target URL to open
     const url = "https://bearclubstudios.github.io/amplertest.github.io/";
 
-    // Listen for the `Shift` key press
+    // Listen for Shift key press
     document.addEventListener("keydown", function(event) {
         if (event.key === "Shift") { // Check if the pressed key is Shift
-            // Open the URL in a new `about:blank` page
-            const newPage = window.open("about:blank", "_blank");
+            // Open the URL in an `about:blank` page
+            const newTab = window.open("about:blank", "_blank");
 
-            if (newPage) {
+            if (newTab) {
                 // Write redirection script to the new page
-                newPage.document.write(`
+                newTab.document.write(`
                     <html>
                     <head><title>Redirecting...</title></head>
                     <body style="margin: 0; background-color: black;"></body>
@@ -33,17 +32,21 @@
                     </script>
                     </html>
                 `);
-                newPage.document.close();
+                newTab.document.close();
 
-                // Close the current tab (file URL)
+                // Provide a slight delay before closing the current tab
                 setTimeout(() => {
-                    window.close();
-                }, 500); // Delay ensures the new tab loads first
+                    try {
+                        window.close();
+                    } catch (e) {
+                        console.warn("Could not close the current tab. This may require user action.");
+                    }
+                }, 1000); // 1-second delay ensures the new tab loads first
             } else {
-                alert("Unable to open the new page. Please allow pop-ups in your browser.");
+                alert("Pop-ups are blocked. Please enable pop-ups for this site to continue.");
             }
 
-            // Prevent the default behavior of the Shift key
+            // Prevent default Shift key behavior
             event.preventDefault();
         }
     });
