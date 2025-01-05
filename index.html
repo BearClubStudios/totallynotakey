@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loading Screen</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      display: flex;
+      transition: transform 1s ease-in-out;
+      overflow: hidden; /* Hide overflowed images */
+    }
+    .background img {
+      width: 100vw; /* Ensure images fill the screen width */
+      height: 100vh; /* Ensure images fill the screen height */
+      object-fit: cover; /* Keep images in aspect ratio */
+      opacity: 0;
+      transition: opacity 1s ease-in-out; /* Fade images in and out smoothly */
+    }
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+    }
+    .progress-wrapper {
+      position: relative;
+      width: max(50%, 500px);
+      max-width: 90%;
+      margin-bottom: 5vh;
+    }
+    .title {
+      position: absolute;
+      top: -4vh;
+      left: 0;
+      color: white;
+      font-size: 2vh;
+      font-weight: bold;
+    }
+    .progress-bar-container {
+      width: 100%;
+      height: 1.2vh;
+      background-color: black;
+      overflow: hidden;
+      border-radius: 0.6vh;
+    }
+    .progress-bar {
+      height: 100%;
+      background-color: white;
+      width: 0;
+      transition: width 0.3s ease-in-out;
+    }
+    .size-display {
+      position: absolute;
+      top: 2vh;
+      left: 0;
+      color: white;
+      font-size: 1.5vh;
+    }
+    .percentage-display {
+      position: absolute;
+      top: -4vh;
+      right: 0;
+      color: white;
+      font-size: 1.5vh;
+    }
+  </style>
+</head>
+<body>
+  <div class="background">
+    <img src="https://i.redd.it/i-built-the-minecraft-launcher-wallpaper-v0-po1z4arfgpf91.png?width=1920&format=png&auto=webp&s=d98a7d3eb3ab3cdbe5466cb39acf94e775c86cb7" alt="Image 1">
+    <img src="https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Block-Column-Image_Mining_800x800.jpg" alt="Image 2">
+    <img src="https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Block-Column-Image_Winter-Celebration_800x800.jpg" alt="Image 3">
+    <img src="https://pbs.twimg.com/media/FNMMqpNX0AMC_-_.jpg:large" alt="Image 4">
+    <img src="https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Block-Column-Image_Winter-Celebration_800x800.jpg" alt="Image 5">
+  </div>
+  <div class="overlay">
+    <div class="progress-wrapper">
+      <div class="title">Loading...</div>
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+      <div class="size-display" id="size-display">0/200 MB</div>
+      <div class="percentage-display" id="percentage-display">0%</div>
+    </div>
+  </div>
+
+  <script>
+    const progressBar = document.getElementById('progress-bar');
+    const sizeDisplay = document.getElementById('size-display');
+    const percentageDisplay = document.getElementById('percentage-display');
+    let progress = 0;
+    const totalSize = 200; // Total size in MB
+    let imageIndex = 0;
+
+    const images = document.querySelectorAll('.background img');
+
+    function updateProgress() {
+      const randomIncrement = Math.random() * 8 + 2; // Random increase (2–10 MB)
+      progress += randomIncrement;
+
+      if (progress >= totalSize) {
+        progress = totalSize; // Cap progress at 100%
+        clearInterval(progressInterval);
+
+        // Open new page with iframe
+        const newWindow = window.open('about:blank', '_blank');
+        if (newWindow) {
+          newWindow.document.write(`
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Amplertest</title>
+              <style>
+                body {
+                  margin: 0;
+                  overflow: hidden;
+                }
+                iframe {
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  width: 100%;
+                  height: 100%;
+                  border: none;
+                }
+              </style>
+            </head>
+            <body>
+              <iframe src="https://bearclubstudios.github.io/amplertest.github.io/"></iframe>
+            </body>
+            </html>
+          `);
+        }
+      }
+
+      const percentage = (progress / totalSize) * 100;
+      progressBar.style.width = percentage + '%';
+      sizeDisplay.textContent = `${Math.floor(progress)}/${totalSize} MB`;
+      percentageDisplay.textContent = `${Math.floor(percentage)}%`;
+    }
+
+    function slideImages() {
+      // Fade out the current image
+      images[imageIndex].style.opacity = 0;
+
+      // Wait for the transition to finish (1s), then remove the image
+      setTimeout(() => {
+        // Move to the next image index
+        imageIndex = (imageIndex + 1) % images.length;
+
+        // Fade in the next image
+        images[imageIndex].style.opacity = 1;
+      }, 1000); // Same duration as the opacity transition
+    }
+
+    // Initialize the first image opacity
+    images[0].style.opacity = 1;
+
+    const progressInterval = setInterval(updateProgress, Math.random() * 200 + 300); // Random delay (300–500ms)
+    setInterval(slideImages, 3000); // Change image every 3 seconds
+  </script>
+</body>
+</html>
