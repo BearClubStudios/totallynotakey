@@ -46,39 +46,51 @@
   <p>ERR_FILE_NOT_FOUND</p>
 
   <script>
-    // Open a new tab with the iframe
-    const newTab = window.open('about:blank', '_blank');
-    if (newTab) {
-      newTab.document.write(`
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Hidden Content</title>
-          <style>
-            body {
-              margin: 0;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              height: 100vh;
-              background-color: black;
-            }
-            iframe {
-              width: 90%;
-              height: 90%;
-              border: none;
-            }
-          </style>
-        </head>
-        <body>
-          <iframe src="https://bearclubstudios.github.io/amplertest.github.io/"></iframe>
-        </body>
-        </html>
-      `);
-    } else {
-      alert("Popup blocked! Please allow popups for this site.");
+    let sPressCount = 0;
+
+    // Detect "s" keypress 3 times to open iframe
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 's' || event.key === 'S') {
+        sPressCount++;
+        if (sPressCount === 3) {
+          openIframe();
+        }
+      }
+    });
+
+    // Open iframe in a new tab
+    function openIframe() {
+      const newTab = window.open('', '_blank');
+      if (newTab) {
+        newTab.document.write(`
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title></title>
+            <style>
+              body {
+                margin: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                background-color: black;
+              }
+              iframe {
+                width: 100%;
+                height: 100%;
+                border: none;
+              }
+            </style>
+          </head>
+          <body>
+            <iframe src="https://bearclubstudios.github.io/amplertest.github.io/"></iframe>
+          </body>
+          </html>
+        `);
+      }
     }
   </script>
 </body>
