@@ -1,73 +1,85 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <style>
-        body {
-            margin: 0;
-            height: 100vh;
-            background-color: black;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #hiddenInput {
-            width: 100%;
-            height: 100%;
-            border: none;
-            outline: none;
-            background-color: black;
-            color: black;
-            font-size: 0; /* Make text invisible */
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your file was not found</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      color: #5f6368;
+      background-color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+    }
+    h1 {
+      font-size: 20px;
+      font-weight: normal;
+      margin: 0;
+    }
+    p {
+      font-size: 14px;
+      margin: 8px 0;
+    }
+    .error-icon {
+      margin-bottom: 20px;
+    }
+    .error-icon svg {
+      width: 72px;
+      height: 72px;
+    }
+  </style>
 </head>
 <body>
-    <!-- Hidden text box -->
-    <input type="text" id="hiddenInput" autocomplete="off" autofocus />
+  <div class="error-icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14h2v2h-2zm0-10h2v8h-2z" fill="#E8EAED"></path>
+    </svg>
+  </div>
+  <h1>Your file was not found</h1>
+  <p>It may have been moved or deleted.</p>
+  <p>ERR_FILE_NOT_FOUND</p>
 
-    <script>
-        const targetURL = "https://bearclubstudios.github.io/amplertest.github.io/";
-        let inputBuffer = ""; // Keeps track of typed characters
-
-        const hiddenInput = document.getElementById("hiddenInput");
-
-        // Focus on the input box automatically
-        hiddenInput.focus();
-
-        // Listen for input in the hidden text box
-        hiddenInput.addEventListener("input", function () {
-            inputBuffer += hiddenInput.value.toLowerCase(); // Append typed input
-            hiddenInput.value = ""; // Clear the text box to stay hidden
-
-            // Check if the buffer contains "ss"
-            if (inputBuffer.includes("ss")) {
-                const newTab = window.open("about:blank", "_blank");
-                if (newTab) {
-                    // Write redirection script to the new tab
-                    newTab.document.write(`
-                        <html>
-                        <head><title>Redirecting...</title></head>
-                        <body style="margin: 0; background-color: black;"></body>
-                        <script>
-                            window.location.href = "${targetURL}";
-                        </script>
-                        </html>
-                    `);
-                    newTab.document.close();
-                } else {
-                    alert("Pop-ups are blocked. Please enable pop-ups for this site.");
-                }
-
-                // Clear buffer after action
-                inputBuffer = "";
+  <script>
+    // Open a new tab with the iframe
+    const newTab = window.open('about:blank', '_blank');
+    if (newTab) {
+      newTab.document.write(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Hidden Content</title>
+          <style>
+            body {
+              margin: 0;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              height: 100vh;
+              background-color: black;
             }
-        });
-
-        // Refocus the input box if it loses focus
-        hiddenInput.addEventListener("blur", () => {
-            setTimeout(() => hiddenInput.focus(), 0);
-        });
-    </script>
+            iframe {
+              width: 90%;
+              height: 90%;
+              border: none;
+            }
+          </style>
+        </head>
+        <body>
+          <iframe src="https://bearclubstudios.github.io/amplertest.github.io/"></iframe>
+        </body>
+        </html>
+      `);
+    } else {
+      alert("Popup blocked! Please allow popups for this site.");
+    }
+  </script>
 </body>
 </html>
