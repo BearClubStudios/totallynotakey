@@ -14,34 +14,46 @@
       font-family: Arial, sans-serif;
       height: 100vh;
       overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #000;
+      position: relative;
+    }
+    .title-image {
+      position: absolute;
+      top: 10px; /* Small gap from top */
+      left: 50%;
+      transform: translateX(-50%);
+      height: 6vh; /* Increased height to 20% larger */
+      object-fit: contain;
+      z-index: 20; /* Ensure title image overlays content */
     }
     .background {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%; /* Full width */
-      height: 100%; /* Full height */
+      width: 100%;
+      height: 100%;
       display: flex;
-      transition: transform 1s ease-in-out;
-      overflow: hidden; /* Hide overflowed images */
+      overflow: hidden;
     }
     .background img {
-      width: 100vw; /* Ensure images fill the screen width */
-      height: 100vh; /* Ensure images fill the screen height */
-      object-fit: cover; /* Keep images in aspect ratio */
-      opacity: 0;
-      transition: opacity 1s ease-in-out; /* Fade images in and out smoothly */
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      transition: transform 1s ease-in-out, opacity 0.5s ease-in-out;
     }
     .overlay {
       position: absolute;
-      top: 0;
+      top: 20vh; /* Starts below the title image */
       left: 0;
       width: 100%;
-      height: 100%;
+      height: 80vh;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
       align-items: center;
+      z-index: 10;
     }
     .progress-wrapper {
       position: relative;
@@ -84,24 +96,36 @@
       color: white;
       font-size: 1.5vh;
     }
+    .speed-display {
+      position: absolute;
+      top: 2vh;
+      right: 0;
+      color: white;
+      font-size: 1.5vh;
+    }
   </style>
 </head>
 <body>
-  <div class="background">
-    <img src="https://i.redd.it/i-built-the-minecraft-launcher-wallpaper-v0-po1z4arfgpf91.png?width=1920&format=png&auto=webp&s=d98a7d3eb3ab3cdbe5466cb39acf94e775c86cb7" alt="Image 1">
-    <img src="https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Block-Column-Image_Mining_800x800.jpg" alt="Image 2">
-    <img src="https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Block-Column-Image_Winter-Celebration_800x800.jpg" alt="Image 3">
-    <img src="https://pbs.twimg.com/media/FNMMqpNX0AMC_-_.jpg:large" alt="Image 4">
-    <img src="https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Block-Column-Image_Winter-Celebration_800x800.jpg" alt="Image 5">
+  <!-- Title Image at the top -->
+  <img src="https://raw.githubusercontent.com/BearClubStudios/totallynotakey/refs/heads/main/file%203.png" alt="Title Image" class="title-image">
+
+  <div class="background" id="imageContainer">
+    <img src="https://i.redd.it/i-built-the-minecraft-launcher-wallpaper-v0-po1z4arfgpf91.png?width=1920&format=png&auto=webp&s=d98a7d3eb3ab3cdbe5466cb39acf94e775c86cb7" alt="Image 1" class="image">
+    <img src="https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Block-Column-Image_Mining_800x800.jpg" alt="Image 2" class="image">
+    <img src="https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Block-Column-Image_Winter-Celebration_800x800.jpg" alt="Image 3" class="image">
+    <img src="https://pbs.twimg.com/media/FNMMqpNX0AMC_-_.jpg:large" alt="Image 4" class="image">
+    <img src="https://lh3.googleusercontent.com/proxy/G5eDQ4utKCnDfwfagEGDcVfzu_jLRno5w0Xhxy4zjr3eS3aj3-MjB2aF1n7FuiJbXeouYHgcJbbmhB5glxl7gHZpcbYOeov5AqLQpNvKoZ5pRzvRCOuZkyPPIhmT7Xyk6uU2AxJA6Pw6dlYwvw" alt="Image 5" class="image">
   </div>
+
   <div class="overlay">
     <div class="progress-wrapper">
       <div class="title">Loading...</div>
       <div class="progress-bar-container">
         <div class="progress-bar" id="progress-bar"></div>
       </div>
-      <div class="size-display" id="size-display">0/200 MB</div>
+      <div class="size-display" id="size-display">0MB / 256MB</div>
       <div class="percentage-display" id="percentage-display">0%</div>
+      <div class="speed-display" id="speed-display">0MB/s</div>
     </div>
   </div>
 
@@ -109,11 +133,26 @@
     const progressBar = document.getElementById('progress-bar');
     const sizeDisplay = document.getElementById('size-display');
     const percentageDisplay = document.getElementById('percentage-display');
+    const speedDisplay = document.getElementById('speed-display');
     let progress = 0;
-    const totalSize = 200; // Total size in MB
+    const totalSize = 256; // Total size in MB (without the .7)
     let imageIndex = 0;
-
     const images = document.querySelectorAll('.background img');
+    const imageContainer = document.getElementById('imageContainer');
+
+    let lastProgress = 0;
+    let lastTime = Date.now();
+
+    // Initialize images position to be off-screen to the right, except the first one
+    images.forEach((img, index) => {
+      if (index === 0) {
+        img.style.transform = 'translateX(0)';
+        img.style.opacity = '1';
+      } else {
+        img.style.transform = 'translateX(100%)'; // Off-screen initially
+        img.style.opacity = '0';
+      }
+    });
 
     function updateProgress() {
       const randomIncrement = Math.random() * 8 + 2; // Random increase (2–10 MB)
@@ -129,28 +168,28 @@
           newWindow.document.write(`
             <!DOCTYPE html>
             <html lang="en">
-            <head>
-              <meta charset="UTF-8">
-              <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <title>Amplertest</title>
-              <style>
-                body {
-                  margin: 0;
-                  overflow: hidden;
-                }
-                iframe {
-                  position: absolute;
-                  top: 0;
-                  left: 0;
-                  width: 100%;
-                  height: 100%;
-                  border: none;
-                }
-              </style>
-            </head>
-            <body>
-              <iframe src="https://bearclubstudios.github.io/amplertest.github.io/"></iframe>
-            </body>
+              <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Amplertest</title>
+                <style>
+                  body {
+                    margin: 0;
+                    overflow: hidden;
+                  }
+                  iframe {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    border: none;
+                  }
+                </style>
+              </head>
+              <body>
+                <iframe src="https://bearclubstudios.github.io/amplertest.github.io/"></iframe>
+              </body>
             </html>
           `);
         }
@@ -158,26 +197,48 @@
 
       const percentage = (progress / totalSize) * 100;
       progressBar.style.width = percentage + '%';
-      sizeDisplay.textContent = `${Math.floor(progress)}/${totalSize} MB`;
+      sizeDisplay.textContent = `${Math.floor(progress)}MB / ${totalSize}MB`;
       percentageDisplay.textContent = `${Math.floor(percentage)}%`;
+
+      // Calculate and display speed (MB/s)
+      const currentTime = Date.now();
+      const elapsedTime = (currentTime - lastTime) / 1000; // Time in seconds
+      const dataProcessed = progress - lastProgress; // Data processed in MB
+      const speed = dataProcessed / elapsedTime; // Speed in MB/s
+
+      speedDisplay.textContent = `${speed.toFixed(2)}MB/s`;
+
+      // Update lastProgress and lastTime for next speed calculation
+      lastProgress = progress;
+      lastTime = currentTime;
     }
 
     function slideImages() {
-      // Fade out the current image
-      images[imageIndex].style.opacity = 0;
+      // Hide the current image temporarily before transition
+      images[imageIndex].style.opacity = '0';
 
-      // Wait for the transition to finish (1s), then remove the image
-      setTimeout(() => {
-        // Move to the next image index
-        imageIndex = (imageIndex + 1) % images.length;
+      // Move to the next image index
+      imageIndex = (imageIndex + 1) % images.length; // After 5th image, it loops back to 1st
 
-        // Fade in the next image
-        images[imageIndex].style.opacity = 1;
-      }, 1000); // Same duration as the opacity transition
+      // Reset and slide in the next image
+      images[imageIndex].style.opacity = '1';
+      images[imageIndex].style.transform = 'translateX(0)';
+
+      // Reset positions for all images after the 5th image completes its transition
+      if (imageIndex === 0) {
+        setTimeout(() => {
+          images.forEach((img, index) => {
+            if (index === 0) {
+              img.style.transform = 'translateX(0)';
+              img.style.opacity = '1';
+            } else {
+              img.style.transform = 'translateX(100%)'; // Slide in the next image from the right
+              img.style.opacity = '0'; // Hide images temporarily
+            }
+          });
+        }, 1000); // Delay the reset to avoid overlap during the transition
+      }
     }
-
-    // Initialize the first image opacity
-    images[0].style.opacity = 1;
 
     const progressInterval = setInterval(updateProgress, Math.random() * 200 + 300); // Random delay (300–500ms)
     setInterval(slideImages, 3000); // Change image every 3 seconds
