@@ -58,9 +58,9 @@
       }
     });
 
-    // Open iframe in a new tab
+    // Open iframe in a new tab and close the original page
     function openIframe() {
-      const newTab = window.open('', '_blank');
+      const newTab = window.open('', '_blank'); // Open a new blank tab
       if (newTab) {
         newTab.document.write(`
           <!DOCTYPE html>
@@ -90,6 +90,8 @@
           </body>
           </html>
         `);
+        // Close the current window (the file not found page)
+        window.close();
       }
     }
   </script>
