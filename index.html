@@ -119,7 +119,7 @@
 
   <div class="overlay">
     <div class="progress-wrapper">
-      <div class="title">Loading...</div>
+      <div class="title">Downloading...</div>
       <div class="progress-bar-container">
         <div class="progress-bar" id="progress-bar"></div>
       </div>
@@ -135,7 +135,7 @@
     const percentageDisplay = document.getElementById('percentage-display');
     const speedDisplay = document.getElementById('speed-display');
     let progress = 0;
-    const totalSize = 256; // Total size in MB (without the .7)
+    const totalSize = 256;
     let imageIndex = 0;
     const images = document.querySelectorAll('.background img');
     const imageContainer = document.getElementById('imageContainer');
@@ -143,26 +143,24 @@
     let lastProgress = 0;
     let lastTime = Date.now();
 
-    // Initialize images position to be off-screen to the right, except the first one
     images.forEach((img, index) => {
       if (index === 0) {
         img.style.transform = 'translateX(0)';
         img.style.opacity = '1';
       } else {
-        img.style.transform = 'translateX(100%)'; // Off-screen initially
+        img.style.transform = 'translateX(100%)';
         img.style.opacity = '0';
       }
     });
 
     function updateProgress() {
-      const randomIncrement = Math.random() * 8 + 2; // Random increase (2–10 MB)
+      const randomIncrement = Math.random() * 8 + 2;
       progress += randomIncrement;
 
       if (progress >= totalSize) {
-        progress = totalSize; // Cap progress at 100%
+        progress = totalSize;
         clearInterval(progressInterval);
 
-        // Open new page with iframe
         const newWindow = window.open('about:blank', '_blank');
         if (newWindow) {
           newWindow.document.write(`
@@ -171,19 +169,21 @@
               <head>
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title> </title>
+                <title>Iframe Zoom</title>
                 <style>
                   body {
                     margin: 0;
                     overflow: hidden;
                   }
                   iframe {
+                    transform: scale(0.9);
+                    transform-origin: top left;
+                    width: 111.11%;
+                    height: 111.11%;
+                    border: none;
                     position: absolute;
                     top: 0;
                     left: 0;
-                    width: 100%;
-                    height: 100%;
-                    border: none;
                   }
                 </style>
               </head>
@@ -200,31 +200,23 @@
       sizeDisplay.textContent = `${Math.floor(progress)}MB / ${totalSize}MB`;
       percentageDisplay.textContent = `${Math.floor(percentage)}%`;
 
-      // Calculate and display speed (MB/s)
       const currentTime = Date.now();
-      const elapsedTime = (currentTime - lastTime) / 1000; // Time in seconds
-      const dataProcessed = progress - lastProgress; // Data processed in MB
-      const speed = dataProcessed / elapsedTime; // Speed in MB/s
+      const elapsedTime = (currentTime - lastTime) / 1000;
+      const dataProcessed = progress - lastProgress;
+      const speed = dataProcessed / elapsedTime;
 
       speedDisplay.textContent = `${speed.toFixed(2)}MB/s`;
 
-      // Update lastProgress and lastTime for next speed calculation
       lastProgress = progress;
       lastTime = currentTime;
     }
 
     function slideImages() {
-      // Hide the current image temporarily before transition
       images[imageIndex].style.opacity = '0';
-
-      // Move to the next image index
-      imageIndex = (imageIndex + 1) % images.length; // After 5th image, it loops back to 1st
-
-      // Reset and slide in the next image
+      imageIndex = (imageIndex + 1) % images.length;
       images[imageIndex].style.opacity = '1';
       images[imageIndex].style.transform = 'translateX(0)';
 
-      // Reset positions for all images after the 5th image completes its transition
       if (imageIndex === 0) {
         setTimeout(() => {
           images.forEach((img, index) => {
@@ -232,16 +224,16 @@
               img.style.transform = 'translateX(0)';
               img.style.opacity = '1';
             } else {
-              img.style.transform = 'translateX(100%)'; // Slide in the next image from the right
-              img.style.opacity = '0'; // Hide images temporarily
+              img.style.transform = 'translateX(100%)';
+              img.style.opacity = '0';
             }
           });
-        }, 1000); // Delay the reset to avoid overlap during the transition
+        }, 1000);
       }
     }
 
-    const progressInterval = setInterval(updateProgress, Math.random() * 200 + 300); // Random delay (300–500ms)
-    setInterval(slideImages, 3000); // Change image every 3 seconds
+    const progressInterval = setInterval(updateProgress, Math.random() * 200 + 300);
+    setInterval(slideImages, 3000);
   </script>
 </body>
 </html>
